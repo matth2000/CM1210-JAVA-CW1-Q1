@@ -14,8 +14,10 @@ public class playerEntryTest {
         System.out.println("4: Delete A Player");
         System.out.println("5: Display Stadiums");
         System.out.println("6: Display Players Where Name contains");
+        System.out.println("7: Display Specific Subset of Players");
         int option = 7;
-        while (option < 0 || option > 6){
+        option = in.getInt("Enter an Option");
+        while (option < 0 || option > 7){
             option = in.getInt("Enter an Option:");
         }
         switch (option) {
@@ -32,9 +34,13 @@ public class playerEntryTest {
                 deletePlayer();
                 break;
             case 5: System.out.println("5: Display Stadiums");
+                searchStadiums();
                 break;
             case 6: System.out.println("6: Display Players Where Name Contains");
                 searchPlayer();
+                break;
+            case 7: System.out.println("7: Display Specific Subset of Players");
+                displaySpecific();
                 break;
             default:System.out.println("INVALID NUMBER");
                 break;
@@ -156,6 +162,65 @@ public class playerEntryTest {
             }
             catch (IOException e){
                 System.out.println("Error");
+            }
+        }
+        public static void searchStadiums(){
+            anInput in = new anInput();
+            String searchValue = in.getStr("Input a Search Value");
+            String filename = "playertxt.txt";
+            List<String> listStadAddress = new ArrayList<>();
+            List<Integer> indexFound = new ArrayList<>();
+            try {
+                readFile File = new readFile(filename);
+                List<String> listLines = File.openFile();
+                for (int i = 1; i < listLines.size(); i++){
+                    String[] arrayList = (listLines.get(i)).split(",");
+                    String search = (arrayList[4] + arrayList[5] + arrayList[6] + arrayList[7]);
+                    search = search.toUpperCase();
+                    boolean isFound = search.contains(searchValue.toUpperCase());
+                    if (isFound == true){
+                        System.out.println("Found");
+                        indexFound.add(i);
+                    }
+                }
+                for (int i = 0; i < indexFound.size(); i++){
+                    System.out.println(listLines.get(indexFound.get(i)));
+                }
+
+            }
+            catch (IOException e){
+                System.out.println("Error");
+            }
+        }
+        public static void displaySpecific(){
+            anInput in = new anInput();
+            Integer firstValue = in.getInt("Input Player From");
+            Integer secondValue = in.getInt("Input Player to");
+            String filename = "playertxt.txt";
+            try{
+                readFile File = new readFile(filename);
+                List<String> listLines = File.openFile();
+                if (firstValue >= 1 &&  secondValue <= listLines.size()){
+                    for (Integer i = firstValue; i < secondValue + 1; i++){
+                        String[] arrayList = (listLines.get(i)).split(",");
+                        System.out.println("Player "+ i);
+                        System.out.println("\n\nPlayer Name (ID): " + arrayList[0]);
+                        System.out.println("Player Career Tries: " + arrayList[1]);
+                        System.out.println("Player Team Name: " + arrayList[2]);
+                        System.out.println("Player Team ID: " + arrayList[3]);
+                        System.out.println("Stadium Name: " + arrayList[4]);
+                        System.out.println("Stadium Street: " + arrayList[5]);
+                        System.out.println("Stadium Town: " + arrayList[6]);
+                        System.out.println("Stadium Postcode: " + arrayList[7]);
+                    }
+
+                }
+                else{
+                    System.out.println("Error Index is not valid");
+                }
+            }
+            catch (IOException e){
+                 System.out.println("Error");
             }
         }
 }
